@@ -51,7 +51,7 @@ def getHmacSha256AuthHeader(mac_key_id,mac_key,verb,resource,hostname,port,body=
         msg = '\n'.join(msgLines) + '\n'
     else:
         msg = '\n'.join(msgLines) + '\n\n'
-   
+
     debugDetail('input to hash: '+repr(msg))
     debugRaw(msg)
 
@@ -124,7 +124,7 @@ class TentApp(object):
         self.appID = None          # keep this.  these four come during registration
 
         self.mac_key_id = None     # temporary.  used during registration oauth flow
-        self.mac_key = None        #          
+        self.mac_key = None        #
         self.mac_algorithm = None  #
 
         self.secret = None         # keep this.  a mac_key    that comes at the end of the oauth flow
@@ -145,9 +145,10 @@ class TentApp(object):
 
         # remove trailing "/profile" from urls
         for ii in range(len(self.apiRootUrls)):
-            self.apiRootUrls[ii] = self.apiRootUrls[ii].replace('/profile','')
+            self.apiRootUrls[ii] = self.apiRootUrls[ii].replace('/tent/profile','')
 
         debugDetail('server api urls = %s'%self.apiRootUrls)
+
 
     def _register(self):
         # get self.appID and self.mac_* from server
@@ -234,7 +235,7 @@ class TentApp(object):
 
         # trade the code for a permanent secret
         # first make the auth headers using the credentials from the registration step
-        resource = '/apps/%s/authorizations'%self.appID
+        resource = '/tent/apps/%s/authorizations'%self.appID
         jsonPayload = {'code':code, 'token_type':'mac'}
         authHeader = getHmacSha256AuthHeader(mac_key_id = self.mac_key_id,
                                                 mac_key = self.mac_key,
@@ -278,7 +279,7 @@ class TentApp(object):
 
         # TODO: now we need to save the access token and secret to disk
         #  so we can use them in future requests to get actual work done
-        
+
 
     def _genericGet(self,resource):
         requestUrl = self.apiRootUrls[0] + resource
@@ -300,7 +301,7 @@ class TentApp(object):
     def putProfile(profileType,value):
         # PUT /profile/$profileType
         pass
-    
+
     def follow(self,entityUrl):
         # POST /followings
         pass
@@ -325,7 +326,7 @@ class TentApp(object):
 
     def putPost(self,post,attachments=[]):
         debugMain('putPost')
-        resource = '/posts'
+        resource = '/tent/posts'
         requestUrl = self.apiRootUrls[0] + resource
         authHeader = getHmacSha256AuthHeader(mac_key_id = myauthtokens.mac_key_id, # HACK: use key from Tent Status app
                                                 mac_key = myauthtokens.mac_key,
